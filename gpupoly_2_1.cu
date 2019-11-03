@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     for (int i = 0; i < degree + 1; ++i)
         poly[i] = 1.;
 
-    float *d_array, *d_poly;
+    float *d_array;
 
     cudaMallocHost((void **)&d_array, n * sizeof(float));
 
