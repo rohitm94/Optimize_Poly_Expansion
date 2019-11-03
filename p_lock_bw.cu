@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     begin = std::chrono::system_clock::now();
 
     for(int iter = 0; iter < nbiter; ++iter)
-        cudaMemcpyAsync(d_array, array, n * sizeof(float), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_array, array, n * sizeof(float), cudaMemcpyHostToDevice);
 
     end = std::chrono::system_clock::now();
     std::chrono::duration<double> totaltime = (end - begin);
