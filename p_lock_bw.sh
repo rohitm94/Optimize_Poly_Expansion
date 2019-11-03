@@ -8,5 +8,5 @@ for n in `seq 250 250 999` \
 	 `seq 25000000 25000000 99999999`\
          `seq 250000000 100000000 1999999999`
 	do
-		./measure2 $n 1 >> bandwidth.txt
+		./p_lock_bw $n 1 >> bandwidth.txt
 	done
