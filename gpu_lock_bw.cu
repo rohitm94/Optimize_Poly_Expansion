@@ -35,8 +35,11 @@ int main(int argc, char *argv[])
     int degree = atoi(argv[2]);
     int nbiter = 1;
 
-    float *array = new float[n];
-    float *poly = new float[degree + 1];
+    float* array = NULL;
+    float* poly = NULL;
+    
+    cudaMallocHost((void **)&array,sizeof(float)*n);
+    cudaMallocHost((void **)&poly,sizeof(float)*(degree+1));
     for (int i = 0; i < n; ++i)
         array[i] = 1.;
 
@@ -45,8 +48,8 @@ int main(int argc, char *argv[])
 
     float *d_array, *d_poly;
 
-    cudaMallocHost((void **)&d_array, n * sizeof(float));
-    cudaMallocHost((void **)&d_poly, (degree + 1) * sizeof(float));
+    cudaMalloc((void **)&d_array, n * sizeof(float));
+    cudaMalloc((void **)&d_poly, (degree + 1) * sizeof(float));
 
     cudaMemcpy(d_array, array, n * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice);
@@ -54,7 +57,7 @@ int main(int argc, char *argv[])
     std::chrono::time_point<std::chrono::system_clock> begin, end;
     begin = std::chrono::system_clock::now();
 
-    for (int iter = 0; iter < nbiter; ++iter)
+    //for (int iter = 0; iter < nbiter; ++iter)
         polynomial_expansion<<<(n + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE>>>(d_poly, degree, n, d_array);
 
     cudaDeviceSynchronize();

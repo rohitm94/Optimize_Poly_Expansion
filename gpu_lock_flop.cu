@@ -37,6 +37,8 @@ int main(int argc, char *argv[])
 
     float *array = new float[n];
     float *poly = new float[degree + 1];
+    cudaMallocHost((void **)&array,sizeof(float)*n);
+    cudaMallocHost((void **)&poly,sizeof(float)*(degree+1));
     for (int i = 0; i < n; ++i)
         array[i] = 1.;
 
@@ -45,8 +47,8 @@ int main(int argc, char *argv[])
 
     float *d_array, *d_poly;
 
-    cudaMallocHost((void **)&d_array, n * sizeof(float));
-    cudaMallocHost((void **)&d_poly, (degree + 1) * sizeof(float));
+    cudaMalloc((void **)&d_array, n * sizeof(float));
+    cudaMalloc((void **)&d_poly, (degree + 1) * sizeof(float));
 
     cudaMemcpy(d_array, array, n * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice);
