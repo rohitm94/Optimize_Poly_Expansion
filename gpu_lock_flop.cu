@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     cudaFree(d_poly);
 
     std::cerr << array[0] << std::endl;
-    std::cout << n*sizeof(float)/1000 << " " << totaltime.count() << " " << (3*double(n)*(degree+1)*nbiter)/(totaltime.count()*1000*1000*1000) << std::endl;
+    std::cout << n*sizeof(float)/1000 << " " << (degree+1)/totaltime.count() << " " << (3*double(n)*(degree+1)*nbiter)/(totaltime.count()*1000*1000*1000) << std::endl;
 
     delete[] array;
     delete[] poly;
