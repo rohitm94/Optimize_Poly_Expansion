@@ -51,13 +51,17 @@ int main(int argc, char *argv[])
     cudaMalloc((void **)&d_array, n * sizeof(float));
     cudaMalloc((void **)&d_poly, (degree + 1) * sizeof(float));
 
+    cudaStream_t stream[1];
+    for (int i = 0; i < 1; ++i)
+        cudaStreamCreate(&stream[i]);
+
     std::chrono::time_point<std::chrono::system_clock> begin, end;
     begin = std::chrono::system_clock::now();
 
     for (int i = 0; i < 1; ++i) {
         cudaMemcpyAsync(d_array, array,n * sizeof(float), cudaMemcpyHostToDevice, stream[i]);
         cudaMemcpyAsync(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice, stream[i]);
-        polynomial_expansion <<<(n + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[i]>>>(outputDevPtr + i * size, inputDevPtr + i * size, size);
+        polynomial_expansion <<<(n + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[i]>>>(d_poly, degree, n, d_array);
         cudaMemcpyAsync(array, d_array,n * sizeof(float), cudaMemcpyDeviceToHost, stream[i]);
         }
     /*cudaMemcpy(d_array, array, n * sizeof(float), cudaMemcpyHostToDevice);
