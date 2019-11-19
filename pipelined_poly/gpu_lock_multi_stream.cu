@@ -76,6 +76,9 @@ int main(int argc, char *argv[])
     std::chrono::duration<double> totaltime = (end - begin);
     //cudaMemcpy(array, d_array, n * sizeof(float), cudaMemcpyDeviceToHost);
 
+    for (int i = 0; i < 4; ++i){
+        cudaStreamDestroy(stream[i]);
+    }
     cudaFree(d_array);
     cudaFree(d_poly);
 
