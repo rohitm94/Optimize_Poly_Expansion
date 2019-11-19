@@ -37,9 +37,11 @@ int main(int argc, char *argv[])
 
     float* array = NULL;
     float* poly = NULL;
-    
+    std::cerr << "fir check"<<std::endl
     cudaMallocHost((void **)&array,sizeof(float)*n);
+    std::cerr << "sec check"<<std::endl
     cudaMallocHost((void **)&poly,sizeof(float)*(degree+1));
+    std::cerr << "thi check"<<std::endl
     for (int i = 0; i < n; ++i)
         array[i] = 1.;
 
@@ -48,8 +50,11 @@ int main(int argc, char *argv[])
 
     float *d_array, *d_poly;
 
+    std::cerr << "for check"<<std::endl
     cudaMalloc((void **)&d_array, n * sizeof(float));
+    std::cerr << "fif check"<<std::endl
     cudaMalloc((void **)&d_poly, (degree + 1) * sizeof(float));
+    std::cerr << "six check"<<std::endl
 
     int size = n * sizeof(float) / 4;
 
@@ -58,25 +63,17 @@ int main(int argc, char *argv[])
     std::cerr << "1st check"<<std::endl;
     for (int i = 0; i < 4; ++i){
         cudaStreamCreate(&stream[i]);
-        std::cerr << i+2<<"th check"<<std::endl;
+        //std::cerr << i+2<<"th check"<<std::endl;
     }
-
-
-    std::cerr << "first check"<<std::endl;
 
     std::chrono::time_point<std::chrono::system_clock> begin, end;
     begin = std::chrono::system_clock::now();
 
     for (int i = 0; i < 4; ++i) {
-        std::cerr << "sec check"<<std::endl;
         cudaMemcpyAsync(d_array+ i*size, array + i*size,size, cudaMemcpyHostToDevice, stream[i]);
-        std::cerr << "thi check"<<std::endl;
         cudaMemcpyAsync(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice, stream[i]);
-        std::cerr << "for check"<<std::endl;
         polynomial_expansion <<<((n/4) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[i]>>>(d_poly, degree, n/4, d_array);
-        std::cerr << "fif check"<<std::endl;
         cudaMemcpyAsync(array+ i*size, d_array+ i*size,size, cudaMemcpyDeviceToHost, stream[i]);
-        std::cerr << "six check"<<std::endl;
         }
     /*cudaMemcpy(d_array, array, n * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice);
