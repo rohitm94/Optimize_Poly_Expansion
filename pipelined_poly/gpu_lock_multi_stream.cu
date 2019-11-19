@@ -46,8 +46,8 @@ int main(int argc, char *argv[])
         poly[i] = 1.;
 
     float *d_array, *d_poly;
-    std::cerr<< *d_array<<endl;
-    std::cerr<< d_array+size<<endl;
+    std::cerr<< *array<<std::endl;
+    std::cerr<< array+size<<std::endl;
 
     cudaMalloc((void **)&d_array, n * sizeof(float));
     cudaMalloc((void **)&d_poly, (degree + 1) * sizeof(float));
