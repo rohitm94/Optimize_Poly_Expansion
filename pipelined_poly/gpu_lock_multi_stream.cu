@@ -37,11 +37,8 @@ int main(int argc, char *argv[])
 
     float* array = NULL;
     float* poly = NULL;
-    std::cerr << "fir check"<<std::endl;
     cudaMallocHost((void **)&array,sizeof(float)*n);
-    std::cerr << "sec check"<<std::endl;
     cudaMallocHost((void **)&poly,sizeof(float)*(degree+1));
-    std::cerr << "thi check"<<std::endl;
     for (int i = 0; i < n; ++i)
         array[i] = 1.;
 
@@ -49,21 +46,17 @@ int main(int argc, char *argv[])
         poly[i] = 1.;
 
     float *d_array, *d_poly;
+    std::cerr<< *d_array<<endl;
+    std::cerr<< d_array+size<<endl;
 
-    std::cerr << "for check"<<std::endl;
     cudaMalloc((void **)&d_array, n * sizeof(float));
-    std::cerr << "fif check"<<std::endl;
     cudaMalloc((void **)&d_poly, (degree + 1) * sizeof(float));
-    std::cerr << "six check"<<std::endl;
 
     int size = n * sizeof(float) / 4;
 
-    std::cerr << "0th check"<<std::endl;
     cudaStream_t stream[4];
-    std::cerr << "1st check"<<std::endl;
     for (int i = 0; i < 4; ++i){
         cudaStreamCreate(&stream[i]);
-        //std::cerr << i+2<<"th check"<<std::endl;
     }
 
     std::chrono::time_point<std::chrono::system_clock> begin, end;
@@ -87,8 +80,6 @@ int main(int argc, char *argv[])
 
     cudaFree(d_array);
     cudaFree(d_poly);
-
-    std::cerr << "sev check"<<std::endl;
 
     std::cout << n*sizeof(float)/1000 << " " << totaltime.count() << " " << ((n+degree+1)*sizeof(float)*nbiter)/totaltime.count() << std::endl;
 
