@@ -57,14 +57,27 @@ int main(int argc, char *argv[])
     for (int i = 0; i < 4; ++i)
         cudaStreamCreate(&stream[i]);
 
+    std::cout << "first check"<<endl;
+    std::cerr << array[0] << std::endl;
+
     std::chrono::time_point<std::chrono::system_clock> begin, end;
     begin = std::chrono::system_clock::now();
 
     for (int i = 0; i < 4; ++i) {
+        std::cout << "sec check"<<endl;
+        std::cerr << array[0] << std::endl;
         cudaMemcpyAsync(d_array+ i*size, array + i*size,size, cudaMemcpyHostToDevice, stream[i]);
+        std::cout << "thi check"<<endl;
+        std::cerr << array[0] << std::endl;
         cudaMemcpyAsync(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice, stream[i]);
+        std::cout << "for check"<<endl;
+        std::cerr << array[0] << std::endl;
         polynomial_expansion <<<((n/4) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[i]>>>(d_poly, degree, n/4, d_array);
+        std::cout << "fif check"<<endl;
+        std::cerr << array[0] << std::endl;
         cudaMemcpyAsync(array+ i*size, d_array+ i*size,size, cudaMemcpyDeviceToHost, stream[i]);
+        std::cout << "six check"<<endl;
+        std::cerr << array[0] << std::endl;
         }
     /*cudaMemcpy(d_array, array, n * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice);
@@ -79,7 +92,9 @@ int main(int argc, char *argv[])
     cudaFree(d_array);
     cudaFree(d_poly);
 
+    std::cout << "sev check"<<endl;
     std::cerr << array[0] << std::endl;
+
     std::cout << n*sizeof(float)/1000 << " " << totaltime.count() << " " << ((n+degree+1)*sizeof(float)*nbiter)/totaltime.count() << std::endl;
 
     delete[] array;
