@@ -47,12 +47,13 @@ int main(int argc, char *argv[])
 
     float *d_array, *d_poly;
     std::cerr<< *array<<std::endl;
-    std::cerr<< array+size<<std::endl;
+    
 
     cudaMalloc((void **)&d_array, n * sizeof(float));
     cudaMalloc((void **)&d_poly, (degree + 1) * sizeof(float));
 
     int size = n * sizeof(float) / 4;
+    std::cerr<< array+size<<std::endl;
 
     cudaStream_t stream[4];
     for (int i = 0; i < 4; ++i){
