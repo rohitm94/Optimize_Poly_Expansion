@@ -37,11 +37,11 @@ int main(int argc, char *argv[])
 
     float* array = NULL;
     float* poly = NULL;
-    std::cerr << "fir check"<<std::endl
+    std::cerr << "fir check"<<std::endl;
     cudaMallocHost((void **)&array,sizeof(float)*n);
-    std::cerr << "sec check"<<std::endl
+    std::cerr << "sec check"<<std::endl;
     cudaMallocHost((void **)&poly,sizeof(float)*(degree+1));
-    std::cerr << "thi check"<<std::endl
+    std::cerr << "thi check"<<std::endl;
     for (int i = 0; i < n; ++i)
         array[i] = 1.;
 
@@ -50,11 +50,11 @@ int main(int argc, char *argv[])
 
     float *d_array, *d_poly;
 
-    std::cerr << "for check"<<std::endl
+    std::cerr << "for check"<<std::endl;
     cudaMalloc((void **)&d_array, n * sizeof(float));
-    std::cerr << "fif check"<<std::endl
+    std::cerr << "fif check"<<std::endl;
     cudaMalloc((void **)&d_poly, (degree + 1) * sizeof(float));
-    std::cerr << "six check"<<std::endl
+    std::cerr << "six check"<<std::endl;
 
     int size = n * sizeof(float) / 4;
 
