@@ -61,10 +61,10 @@ int main(int argc, char *argv[])
     begin = std::chrono::system_clock::now();
 
     for (int i = 0; i < 1; ++i) {
-        cudaMemcpyAsync(d_array+ i*size, array + i*size,size, cudaMemcpyHostToDevice, stream[i]);
+        cudaMemcpyAsync(d_array, array ,size, cudaMemcpyHostToDevice, stream[i]);
         cudaMemcpyAsync(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice, stream[i]);
-        polynomial_expansion <<<(n + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[i]>>>(d_poly, degree, n, d_array+ i*size);
-        cudaMemcpyAsync(array+ i*size, d_array+ i*size,size, cudaMemcpyDeviceToHost, stream[i]);
+        polynomial_expansion <<<(n + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[i]>>>(d_poly, degree, n, d_array);
+        cudaMemcpyAsync(array, d_array,size, cudaMemcpyDeviceToHost, stream[i]);
         }
     /*cudaMemcpy(d_array, array, n * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice);
