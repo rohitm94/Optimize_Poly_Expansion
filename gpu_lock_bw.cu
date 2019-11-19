@@ -35,8 +35,8 @@ int main(int argc, char *argv[])
     int degree = atoi(argv[2]);
     int nbiter = 1;
 
-    float* array = NULL;
-    float* poly = NULL;
+    float* array = new float[n];
+    float* poly = new float[degree+1];
     
     cudaMallocHost((void **)&array,sizeof(float)*n);
     cudaMallocHost((void **)&poly,sizeof(float)*(degree+1));
