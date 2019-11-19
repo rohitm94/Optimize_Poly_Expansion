@@ -53,31 +53,30 @@ int main(int argc, char *argv[])
 
     int size = n * sizeof(float) / 4;
 
+    std::cerr << "0th check"<<std::endl;
     cudaStream_t stream[4];
-    for (int i = 0; i < 4; ++i)
+    std::cerr << "1st check"<<std::endl;
+    for (int i = 0; i < 4; ++i){
         cudaStreamCreate(&stream[i]);
+        std::cerr << i+2<<"th check"<<std::endl;
+    }
 
-    std::cout << "first check"<<std::endl;
-    std::cerr << array[0] << std::endl;
+
+    std::cerr << "first check"<<std::endl;
 
     std::chrono::time_point<std::chrono::system_clock> begin, end;
     begin = std::chrono::system_clock::now();
 
     for (int i = 0; i < 4; ++i) {
-        std::cout << "sec check"<<std::endl;
-        std::cerr << array[0] << std::endl;
+        std::cerr << "sec check"<<std::endl;
         cudaMemcpyAsync(d_array+ i*size, array + i*size,size, cudaMemcpyHostToDevice, stream[i]);
-        std::cout << "thi check"<<std::endl;
-        std::cerr << array[0] << std::endl;
+        std::cerr << "thi check"<<std::endl;
         cudaMemcpyAsync(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice, stream[i]);
-        std::cout << "for check"<<std::endl;
-        std::cerr << array[0] << std::endl;
+        std::cerr << "for check"<<std::endl;
         polynomial_expansion <<<((n/4) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[i]>>>(d_poly, degree, n/4, d_array);
-        std::cout << "fif check"<<std::endl;
-        std::cerr << array[0] << std::endl;
+        std::cerr << "fif check"<<std::endl;
         cudaMemcpyAsync(array+ i*size, d_array+ i*size,size, cudaMemcpyDeviceToHost, stream[i]);
-        std::cout << "six check"<<std::endl;
-        std::cerr << array[0] << std::endl;
+        std::cerr << "six check"<<std::endl;
         }
     /*cudaMemcpy(d_array, array, n * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice);
@@ -92,8 +91,7 @@ int main(int argc, char *argv[])
     cudaFree(d_array);
     cudaFree(d_poly);
 
-    std::cout << "sev check"<<std::endl;
-    std::cerr << array[0] << std::endl;
+    std::cerr << "sev check"<<std::endl;
 
     std::cout << n*sizeof(float)/1000 << " " << totaltime.count() << " " << ((n+degree+1)*sizeof(float)*nbiter)/totaltime.count() << std::endl;
 
