@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
     for (int i = 0; i < 4; ++i) {
         cudaMemcpyAsync(d_array+ i*size, array + i*size,size, cudaMemcpyHostToDevice, stream[i]);
         cudaMemcpyAsync(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice, stream[i]);
-        polynomial_expansion <<<((n/4) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[i]>>>(d_poly, degree, n/4, d_array+ i*size);
+        polynomial_expansion <<<((n/4) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[i]>>>(d_poly+ i*size, degree, n/4, d_array+ i*size);
         cudaMemcpyAsync(array+ i*size, d_array+ i*size,size, cudaMemcpyDeviceToHost, stream[i]);
         }
     /*cudaMemcpy(d_array, array, n * sizeof(float), cudaMemcpyHostToDevice);
