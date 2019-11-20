@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
         cudaStreamCreate(&stream[i]);
     }
 
-    cudaMemcpyAsync(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice, stream[i]);
+    cudaMemcpyAsync(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice);
     cudaDeviceSynchronize();
 
     std::chrono::time_point<std::chrono::system_clock> begin, end;
