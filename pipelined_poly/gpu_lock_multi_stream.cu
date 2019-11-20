@@ -31,7 +31,8 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    long int n = atoi(argv[1]); //TODO: atoi is an unsafe function
+    char *ptr;
+    long int n = strtol(argv[1],&ptr,10);
     int degree = atoi(argv[2]);
     int nbiter = 1;
 
