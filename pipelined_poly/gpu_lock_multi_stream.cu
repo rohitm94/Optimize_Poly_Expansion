@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
     for (int i = 0; i < 4; ++i){
         cudaStreamCreate(&stream[i]);
     }
+    
 
     cudaMemcpyAsync(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice);
     cudaDeviceSynchronize();
