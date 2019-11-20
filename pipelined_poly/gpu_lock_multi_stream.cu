@@ -1,7 +1,7 @@
 #include <iostream>
 #include <chrono>
 
-#define BLOCKSIZE 256
+#define BLOCKSIZE 512
 
 __global__ void polynomial_expansion(float *poly, int degree, int n, float *array)
 {
