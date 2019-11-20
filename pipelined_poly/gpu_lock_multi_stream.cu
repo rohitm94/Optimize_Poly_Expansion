@@ -1,7 +1,7 @@
 #include <iostream>
 #include <chrono>
 
-#define BLOCKSIZE 512
+#define BLOCKSIZE 256
 
 __global__ void polynomial_expansion(float *poly, int degree, int n, float *array)
 {
@@ -59,12 +59,14 @@ int main(int argc, char *argv[])
         cudaStreamCreate(&stream[i]);
     }
 
+    cudaMemcpyAsync(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice, stream[i]);
+    cudaDeviceSynchronize();
+
     std::chrono::time_point<std::chrono::system_clock> begin, end;
     begin = std::chrono::system_clock::now();
 
     for (int i = 0; i < 4; ++i) {
         cudaMemcpyAsync(d_array+ i*size, array + i*size,size, cudaMemcpyHostToDevice, stream[i]);
-        cudaMemcpyAsync(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice, stream[i]);
         polynomial_expansion <<<((n/4) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[i]>>>(d_poly, degree, n/4, d_array + i*size);
         cudaMemcpyAsync(array+ i*size, d_array+ i*size,size, cudaMemcpyDeviceToHost, stream[i]);
         }
