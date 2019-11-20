@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    int n = atoi(argv[1]); //TODO: atoi is an unsafe function
+    long int n = atoi(argv[1]); //TODO: atoi is an unsafe function
     int degree = atoi(argv[2]);
     int nbiter = 1;
 
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
     cudaMalloc((void **)&d_array, n * sizeof(float));
     cudaMalloc((void **)&d_poly, (degree + 1) * sizeof(float));
 
-    int size = n * sizeof(float) / 4;
+    long int size = n * sizeof(float) / 4;
 
     cudaStream_t stream[4];
     for (int i = 0; i < 4; ++i){
