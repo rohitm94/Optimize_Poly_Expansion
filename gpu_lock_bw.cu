@@ -46,7 +46,8 @@ int main(int argc, char *argv[])
     for (int i = 0; i < degree + 1; ++i)
         poly[i] = 1.;
 
-    float *d_array, *d_poly;
+    float* d_array = new float[n];
+    float* d_poly = new float[degree+1];
 
     cudaMalloc((void **)&d_array, n * sizeof(float));
     cudaMalloc((void **)&d_poly, (degree + 1) * sizeof(float));
