@@ -38,13 +38,15 @@ int main(int argc, char *argv[])
     float* array = new float[n];
     float* poly = new float[degree+1];
     
-    cudaMallocHost((void **)&array,sizeof(float)*n);
-    cudaMallocHost((void **)&poly,sizeof(float)*(degree+1));
+
     for (int i = 0; i < n; ++i)
         array[i] = 1.;
 
     for (int i = 0; i < degree + 1; ++i)
         poly[i] = 1.;
+
+    cudaMallocHost((void **)&array,sizeof(float)*n);
+    cudaMallocHost((void **)&poly,sizeof(float)*(degree+1));
 
     float* d_array = new float[n];
     float* d_poly = new float[degree+1];
