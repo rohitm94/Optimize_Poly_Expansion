@@ -82,8 +82,8 @@ int main(int argc, char *argv[])
     std::cerr << array[0] << std::endl;
     std::cout << n*sizeof(float)/1000 << " " << totaltime.count() << " " << ((n+degree+1)*sizeof(float)*nbiter)/totaltime.count() << std::endl;
 
-    delete[] array;
-    delete[] poly;
+    cudaFreeHost(array);
+    cudaFreeHost(poly);
 
     return 0;
 }
