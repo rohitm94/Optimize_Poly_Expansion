@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     }
 
     char *ptr;
-    long int n = strtol(argv[1],&ptr,10);
+    long long int n = strtol(argv[1],&ptr,10);
     int degree = atoi(argv[2]);
     int nbiter = 1;
 
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     cudaMalloc((void **)&d_array, n * sizeof(float));
     cudaMalloc((void **)&d_poly, (degree + 1) * sizeof(float));
 
-    long int size = n * sizeof(float) / 4;
+    long long int size = n * sizeof(float) / 4;
 
     cudaStream_t stream[4];
     for (int i = 0; i < 4; ++i){
