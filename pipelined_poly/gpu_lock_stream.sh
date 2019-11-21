@@ -1,4 +1,4 @@
-rm -rf multistream_bandwidth.txt
+rm -rf pipelined_bandwidth.txt
 
 for deg in  `seq 10 10 99`
 	do
@@ -11,6 +11,6 @@ for deg in  `seq 10 10 99`
 			  `seq 100000000 100000000 999999999` \
 			  `seq 1000000000 1000000000 10000000000`
         	do
-            	    ./gpu_multi_stream $n $deg >> multistream_bandwidth.txt
+            	    ./gpu_multi_stream $n $deg >> pipelined_bandwidth.txt
         	done
 	done
