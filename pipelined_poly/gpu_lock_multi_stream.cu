@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     cudaFree(d_array);
     cudaFree(d_poly);
 
-    std::cout << n*sizeof(float)/1000000000 << " " << totaltime.count() << " " << ((n)*(degree+1)*nbiter)/totaltime.count() << std::endl;
+    std::cout << n*sizeof(float)/(1000*1000) << " " << totaltime.count() << " " << ((n)*(degree+1)*nbiter)/totaltime.count() << std::endl;
 
     cudaFreeHost(array);
     cudaFreeHost(poly);
