@@ -85,10 +85,10 @@ int main(int argc, char *argv[])
 
         double pciBW = 1.50e+10, gpumemBW = 2.88e+11 , gpuflopRate = 1.73e+12 , pciLat = 8.80597e-06;
 
-        double HtD = pciLat + (((n)*(sizeof(float)))/pciBW);
-        double DtH = pciLat + (((n)*(sizeof(float)))/pciBW);
+        double HtD = pciLat + (((nbiter*n)*(sizeof(float)))/pciBW);
+        double DtH = pciLat + (((nbiter*n)*(sizeof(float)))/pciBW);
 
-        double dProc = std::max((3.0*(n)*(degree+1)/(gpuflopRate)),((sizeof(float)*(n+degree+1)/(gpumemBW))));
+        double dProc = std::max(((3.0*(n)*(degree+1))/(gpuflopRate)),((sizeof(float)*((nbiter*n)+degree+1)/(gpumemBW))));
  
         double ideal_time = std::max(dProc,(HtD+DtH));
         
