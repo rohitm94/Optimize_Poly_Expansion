@@ -31,13 +31,13 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    int n = atoi(argv[1]); //TODO: atoi is an unsafe function
+    char *ptr;
+    long long int n = strtol(argv[1],&ptr,10);
     int degree = atoi(argv[2]);
     int nbiter = 1;
 
-    float *array = new float[n];
-    float *poly = new float[degree + 1];
-
+    float* array = NULL;
+    float* poly = NULL;
     
     cudaMallocHost((void **)&array,sizeof(float)*n);
     cudaMallocHost((void **)&poly,sizeof(float)*(degree+1));
@@ -48,32 +48,44 @@ int main(int argc, char *argv[])
         poly[i] = 1.;
 
     float *d_array, *d_poly;
-
+    
     cudaMalloc((void **)&d_array, n * sizeof(float));
     cudaMalloc((void **)&d_poly, (degree + 1) * sizeof(float));
 
-    cudaMemcpy(d_array, array, n * sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice);
+    long long int size = n * sizeof(float) / 4;
+
+    cudaStream_t stream[4];
+    for (int i = 0; i < 4; ++i){
+        cudaStreamCreate(&stream[i]);
+    }
+    
+
+    cudaMemcpyAsync(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice);
+    cudaDeviceSynchronize();
 
     std::chrono::time_point<std::chrono::system_clock> begin, end;
     begin = std::chrono::system_clock::now();
 
-    for (int iter = 0; iter < nbiter; ++iter)
-        polynomial_expansion<<<(n + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE>>>(d_poly, degree, n, d_array);
+    for (int i = 0; i < 4; ++i) {
+        cudaMemcpyAsync(d_array+ i*size, array + i*size,size, cudaMemcpyHostToDevice, stream[i]);
+        polynomial_expansion <<<((n/4) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[i]>>>(d_poly, degree, n/4, d_array + i*size);
+        cudaMemcpyAsync(array+ i*size, d_array+ i*size,size, cudaMemcpyDeviceToHost, stream[i]);
+        }
 
     cudaDeviceSynchronize();
     end = std::chrono::system_clock::now();
     std::chrono::duration<double> totaltime = (end - begin);
-    cudaMemcpy(array, d_array, n * sizeof(float), cudaMemcpyDeviceToHost);
 
+    for (int i = 0; i < 4; ++i){
+        cudaStreamDestroy(stream[i]);
+    }
     cudaFree(d_array);
     cudaFree(d_poly);
 
-    std::cerr << array[0] << std::endl;
-    std::cout << n*sizeof(float)/1000 << " " << (degree+1)/totaltime.count() << " " << (3*double(n)*(degree+1)*nbiter)/(totaltime.count()*1000*1000*1000) << std::endl;
+    std::cout << n*sizeof(float)<< " " << degree << " " << totaltime.count() << " " << ((n)*(degree+1)*nbiter)/totaltime.count() << std::endl;
 
     cudaFreeHost(array);
-    cudaFreehost(poly);
+    cudaFreeHost(poly);
 
     return 0;
 }
