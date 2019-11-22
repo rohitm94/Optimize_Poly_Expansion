@@ -52,10 +52,10 @@ int main(int argc, char *argv[])
         cudaMalloc((void **)&d_array, n * sizeof(float));
         cudaMalloc((void **)&d_poly, (degree + 1) * sizeof(float));
     
-        long long int size = n * sizeof(float) / 4;
+        long long int size = n * sizeof(float) / 7;
     
-        cudaStream_t stream[4];
-        for (int i = 0; i < 4; ++i){
+        cudaStream_t stream[7];
+        for (int i = 0; i < 7; ++i){
             cudaStreamCreate(&stream[i]);
         }
     
@@ -66,9 +66,9 @@ int main(int argc, char *argv[])
         std::chrono::time_point<std::chrono::system_clock> begin, end;
         begin = std::chrono::system_clock::now();
         for(int k = 1; k <=nbiter; k++){
-            for (int i = 0; i < 4; ++i) {
+            for (int i = 0; i < 7; ++i) {
                 cudaMemcpyAsync(d_array+ i*size, array + i*size,size, cudaMemcpyHostToDevice, stream[i]);
-                polynomial_expansion <<<((n/4) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[i]>>>(d_poly, degree, n/4, d_array + i*size);
+                polynomial_expansion <<<((n/7) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[i]>>>(d_poly, degree, n/7, d_array + i*size);
                 cudaMemcpyAsync(array+ i*size, d_array+ i*size,size, cudaMemcpyDeviceToHost, stream[i]);
                 }
             }
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
         end = std::chrono::system_clock::now();
         std::chrono::duration<double> totaltime = (end - begin);
     
-        for (int i = 0; i < 4; ++i){
+        for (int i = 0; i < 7; ++i){
             cudaStreamDestroy(stream[i]);
         }
         cudaFree(d_array);
@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
  
         double ideal_time = std::max(dProc,(HtD+DtH));
         
-        std::cout << n*sizeof(float)<< " " << array[0]<< " " << degree << " " << ideal_time << " " << totaltime.count() << " " << (n)/ideal_time << " " << ((n)*nbiter)/totaltime.count() << std::endl;
+        std::cout << double(n*sizeof(float))<< " " << degree << " " << ideal_time << " " << totaltime.count() << " " << (double(n))/(ideal_time) << " " << ((n)*nbiter)/totaltime.count() << std::endl;
     
         cudaFreeHost(array);
         cudaFreeHost(poly);
