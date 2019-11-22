@@ -1,6 +1,5 @@
 rm -rf pipelined_bandwidth.txt
 
-
 for deg in  `seq 10 10 99`
 	do
 		for n in  `seq 100 100 999` \

@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
     
         cudaFreeHost(array);
         cudaFreeHost(poly);
-    
+     
         return 0;
     }
     
