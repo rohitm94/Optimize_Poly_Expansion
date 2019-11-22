@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
  
         double ideal_time = std::max(dProc,(HtD+DtH));
         
-        std::cout << n*sizeof(float)<< " " << array[0]<< " " << degree << " " << ideal_time << " " << totaltime.count() << " " << ((n))/ideal_time << " " << ((n)*nbiter)/totaltime.count() << std::endl;
+        std::cout << n*sizeof(float)<< " " << array[0]<< " " << degree << " " << ideal_time << " " << totaltime.count() << " " << (n)/ideal_time << " " << ((n)*nbiter)/totaltime.count() << std::endl;
     
         cudaFreeHost(array);
         cudaFreeHost(poly);
