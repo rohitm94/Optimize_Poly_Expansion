@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
         double HtD = pciLat + (((n)*(sizeof(float)))/pciBW);
         double DtH = pciLat + (((n)*(sizeof(float)))/pciBW);
 
-        double dProc = std::max((3.0*(n)*(degree+1)/(gpuflopRate)),((sizeof(float)*(n+degree+1)/(gpumemBW)));
+        double dProc = std::max((3.0*(n)*(degree+1)/(gpuflopRate)),((sizeof(float)*(n+degree+1)/(gpumemBW))));
  
         double ideal_time = std::max(dProc,(HtD+DtH));
         
