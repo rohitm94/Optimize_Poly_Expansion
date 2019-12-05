@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     float* poly = NULL;
 
     cudaMallocHost((void **)&array,sizeof(float)*(n/2));
-    cudaMallocHost((void **)&poly,sizeof(float)*(degree+1);
+    cudaMallocHost((void **)&poly,sizeof(float)*(degree+1));
     for (int i = 0; i < n/2; ++i)
         array[i] = 1.;
 
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     float* poly1 = NULL;
 
     cudaMallocHost((void **)&array1,sizeof(float)*(n/2));
-    cudaMallocHost((void **)&poly1,sizeof(float)*(degree+1);
+    cudaMallocHost((void **)&poly1,sizeof(float)*(degree+1));
     for (int i = 0; i < n/2; ++i)
         array1[i] = 1.;
 
@@ -83,9 +83,9 @@ int main(int argc, char *argv[])
     cudaMalloc((void **)&d_poly1, (degree + 1) * sizeof(float));
 
     
-    cudaStream_t stream[4];
+    cudaStream_t stream1[4];
     for (int i = 0; i < 4; ++i){
-        cudaStreamCreate(&stream[i]);
+        cudaStreamCreate(&stream1[i]);
     }
   
     
@@ -105,9 +105,9 @@ int main(int argc, char *argv[])
                 }
             cudaSetDevice(1);
             for (int i = 0; i < 4; ++i) {
-                cudaMemcpyAsync(d_array1+ i*size, array1 + i*size,size, cudaMemcpyHostToDevice, stream[i]);
-                polynomial_expansion <<<((n/8) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[i]>>>(d_poly, degree, n/8, d_array1 + i*size);
-                cudaMemcpyAsync(array1+ i*size, d_array1+ i*size,size, cudaMemcpyDeviceToHost, stream[i]);
+                cudaMemcpyAsync(d_array1+ i*size, array1 + i*size,size, cudaMemcpyHostToDevice, stream1[i]);
+                polynomial_expansion <<<((n/8) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream1[i]>>>(d_poly, degree, n/8, d_array1 + i*size);
+                cudaMemcpyAsync(array1+ i*size, d_array1+ i*size,size, cudaMemcpyDeviceToHost, stream1[i]);
                 }
             }
     
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
         cudaFree(d_poly);
         cudaSetDevice(1);
         for (int i = 0; i < 4; ++i){
-            cudaStreamDestroy(stream[i]);
+            cudaStreamDestroy(stream1[i]);
         }
         cudaFree(d_array1);
         cudaFree(d_poly1);
