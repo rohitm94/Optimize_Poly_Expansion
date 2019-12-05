@@ -102,14 +102,14 @@ int main(int argc, char *argv[])
 
         double pciBW = 1.50e+10, gpumemBW = 2.88e+11 , gpuflopRate = 1.43e+12 , pciLat = 8.80594e-06;
 
-        double HtD = pciLat + double(((nbiter*n)*(sizeof(float)))/pciBW);
-        double DtH = pciLat + double(((nbiter*n)*(sizeof(float)))/pciBW);
+        double HtD =  double(((nbiter*n)*(sizeof(float)))/pciBW);
+        double DtH =  double(((nbiter*n)*(sizeof(float)))/pciBW);
 
         double dProc = std::max(double((3.0*(n)*(degree+1))/(gpuflopRate)),(double(sizeof(float)*((nbiter*n)+degree+1))/(gpumemBW)));
 
         double ideal_time = std::max(dProc,(HtD+DtH));
 
-        std::cout << n*sizeof(float)<< " " << degree << " " << ideal_time << " " << totaltime.count() << " " << (n)/(ideal_time) << " " << ((n)*nbiter)/totaltime.count() << std::endl;
+        std::cout << n*sizeof(float)<< " " << degree << " " << ideal_time << " " << totaltime.count() << " " << (n*(degree+1))/(ideal_time) << " " << ((n*(degree+1))*nbiter)/totaltime.count() << std::endl;
 
         cudaFreeHost(array);
         cudaFreeHost(poly);
