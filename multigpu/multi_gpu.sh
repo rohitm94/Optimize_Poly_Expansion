@@ -1,6 +1,6 @@
-rm -rf pipelined_bandwidth.txt
+rm -rf gpu_bandwidth.txt
 
-for deg in  `seq 10 10 99`
+for deg in  `seq 10 10 100` 
 	do
 		for n in  `seq 100 100 999` \
 			  `seq 1000 1000 9999` \
@@ -11,6 +11,6 @@ for deg in  `seq 10 10 99`
 			  `seq 100000000 100000000 999999999` \
 			  `seq 1000000000 1000000000 10000000000`
         	do
-            	    ./gpu_multi_stream $n $deg >> pipelined_bandwidth.txt
+            	    ./multi_gpu $n $deg >> gpu_bandwidth.txt
         	done
 	done
