@@ -1,7 +1,7 @@
 #include <iostream>
 #include <chrono>
 
-#define BLOCKSIZE 256
+#define BLOCKSIZE 512
 
 __global__ void polynomial_expansion(float *poly, int degree, int n, float *array)
 {
@@ -51,17 +51,17 @@ int main(int argc, char *argv[])
 
     cudaMalloc((void **)&d_array, (n/2) * sizeof(float));
     cudaMalloc((void **)&d_poly, (degree + 1) * sizeof(float));
-    
+
     long long int size = n * sizeof(float) / 8;
 
-    
+
     cudaStream_t stream[4];
     for (int i = 0; i < 4; ++i){
         cudaStreamCreate(&stream[i]);
     }
-  
-    
-    
+
+
+
     cudaMemcpyAsync(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice);
     cudaDeviceSynchronize();
 
@@ -82,39 +82,43 @@ int main(int argc, char *argv[])
     cudaMalloc((void **)&d_array1, (n/2) * sizeof(float));
     cudaMalloc((void **)&d_poly1, (degree + 1) * sizeof(float));
 
-    
+
     cudaStream_t stream1[4];
     for (int i = 0; i < 4; ++i){
         cudaStreamCreate(&stream1[i]);
     }
-  
-    
-    
-    cudaMemcpyAsync(d_poly, poly, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice);
+
+
+
+    cudaMemcpyAsync(d_poly1, poly1, (degree + 1) * sizeof(float), cudaMemcpyHostToDevice);
     cudaDeviceSynchronize();
 
-    
+
         std::chrono::time_point<std::chrono::system_clock> begin, end;
         begin = std::chrono::system_clock::now();
         for(int k = 1; k <=nbiter; k++){
             cudaSetDevice(0);
             for (int i = 0; i < 4; ++i) {
                 cudaMemcpyAsync(d_array+ i*size, array + i*size,size, cudaMemcpyHostToDevice, stream[i]);
-                polynomial_expansion <<<((n/8) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[i]>>>(d_poly, degree, n/8, d_array + i*size);
+                }
+            for (int i = 0; i < 4; ++i) {
+                 polynomial_expansion <<<((n/8) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[i]>>>(d_poly, degree, n/8, d_array + i*size);
                 cudaMemcpyAsync(array+ i*size, d_array+ i*size,size, cudaMemcpyDeviceToHost, stream[i]);
                 }
             cudaSetDevice(1);
             for (int i = 0; i < 4; ++i) {
                 cudaMemcpyAsync(d_array1+ i*size, array1 + i*size,size, cudaMemcpyHostToDevice, stream1[i]);
+                }
+            for (int i = 0; i < 4; ++i) {
                 polynomial_expansion <<<((n/8) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream1[i]>>>(d_poly, degree, n/8, d_array1 + i*size);
                 cudaMemcpyAsync(array1+ i*size, d_array1+ i*size,size, cudaMemcpyDeviceToHost, stream1[i]);
                 }
             }
-    
+
         cudaDeviceSynchronize();
         end = std::chrono::system_clock::now();
         std::chrono::duration<double> totaltime = (end - begin);
-        
+
         cudaSetDevice(0);
         for (int i = 0; i < 4; ++i){
             cudaStreamDestroy(stream[i]);
@@ -131,20 +135,21 @@ int main(int argc, char *argv[])
         double pciBW = 1.50e+10, gpumemBW = 2.88e+11 , gpuflopRate = 1.43e+12 , pciLat = 8.80594e-06;
 
         double HtD = pciLat + double(((nbiter*(n/2))*(sizeof(float)))/pciBW);
+        std::cout<<"HTD: "<<HtD<<std::endl;
         double DtH = pciLat + double(((nbiter*(n/2))*(sizeof(float)))/pciBW);
 
         double dProc = std::max(double((3.0*(n/2)*(degree+1))/(gpuflopRate)),(double(sizeof(float)*((nbiter*(n/2))+degree+1))/(gpumemBW)));
- 
+        std::cout<<"dproc:"<<dProc<<" "<<double((3.0*(n/2)*(degree+1))/(gpuflopRate))<<" "<<(double(sizeof(float)*((nbiter*(n/2))+degree+1))/(gpumemBW))<<std::endl;
         double ideal_time = std::max(dProc,2*(HtD+DtH));
-        
-        std::cout << double(n*sizeof(float))<< " " << degree << " " << ideal_time << " " << totaltime.count() << " " << (double(n))/(ideal_time) << " " << ((n)*nbiter)/totaltime.count() << std::endl;
+
+        std::cout << double(n*sizeof(float))<< " " << degree << " " << ideal_time << " " << totaltime.count() << " " << (double(n*(degree+1)))/(ideal_time) << " " << ((n)*nbiter)/totaltime.count() << std::endl;
         cudaSetDevice(0);
         cudaFreeHost(array);
         cudaFreeHost(poly);
         cudaSetDevice(1);
         cudaFreeHost(array1);
         cudaFreeHost(poly1);
-     
+
         return 0;
     }
-    
+
