@@ -67,18 +67,21 @@ int main(int argc, char *argv[])
                 cudaStreamCreate(&stream[i]);
             }
             //for (int i = 0; i < 4; ++i) {
-                cudaMemcpyAsync(d_array+ i*size, array + i*size,size, cudaMemcpyHostToDevice, stream[0]);
-                polynomial_expansion <<<((n/4) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[0]>>>(d_poly, degree, n/4, d_array + i*size);
-                cudaMemcpyAsync(array+ i*size, d_array+ i*size,size, cudaMemcpyDeviceToHost, stream[0]);
-                cudaMemcpyAsync(d_array+ i*size, array + i*size,size, cudaMemcpyHostToDevice, stream[1]);
-                polynomial_expansion <<<((n/4) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[1]>>>(d_poly, degree, n/4, d_array + i*size);
-                cudaMemcpyAsync(array+ i*size, d_array+ i*size,size, cudaMemcpyDeviceToHost, stream[1]);
-                cudaMemcpyAsync(d_array+ i*size, array + i*size,size, cudaMemcpyHostToDevice, stream[2]);
-                polynomial_expansion <<<((n/4) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[2]>>>(d_poly, degree, n/4, d_array + i*size);
-                cudaMemcpyAsync(array+ i*size, d_array+ i*size,size, cudaMemcpyDeviceToHost, stream[2]);
-                cudaMemcpyAsync(d_array+ i*size, array + i*size,size, cudaMemcpyHostToDevice, stream[3]);
-                polynomial_expansion <<<((n/4) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[3]>>>(d_poly, degree, n/4, d_array + i*size);
-                cudaMemcpyAsync(array+ i*size, d_array+ i*size,size, cudaMemcpyDeviceToHost, stream[3]);
+                cudaMemcpyAsync(d_array+ 0*size, array + 0*size,size, cudaMemcpyHostToDevice, stream[0]);
+                polynomial_expansion <<<((n/4) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[0]>>>(d_poly, degree, n/4, d_array + 0*size);
+                cudaMemcpyAsync(array+ 0*size, d_array+ 0*size,size, cudaMemcpyDeviceToHost, stream[0]);
+
+                cudaMemcpyAsync(d_array+ 1*size, array + 1*size,size, cudaMemcpyHostToDevice, stream[1]);
+                polynomial_expansion <<<((n/4) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[1]>>>(d_poly, degree, n/4, d_array + 1*size);
+                cudaMemcpyAsync(array+ 1*size, d_array+ 1*size,size, cudaMemcpyDeviceToHost, stream[1]);
+
+                cudaMemcpyAsync(d_array+ 2*size, array + 2*size,size, cudaMemcpyHostToDevice, stream[2]);
+                polynomial_expansion <<<((n/4) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[2]>>>(d_poly, degree, n/4, d_array + 2*size);
+                cudaMemcpyAsync(array+ 2*size, d_array+ 2*size,size, cudaMemcpyDeviceToHost, stream[2]);
+
+                cudaMemcpyAsync(d_array+ 3*size, array + 3*size,size, cudaMemcpyHostToDevice, stream[3]);
+                polynomial_expansion <<<((n/4) + BLOCKSIZE - 1) / BLOCKSIZE, BLOCKSIZE, 0, stream[3]>>>(d_poly, degree, n/4, d_array + 3*size);
+                cudaMemcpyAsync(array+ 3*size, d_array+ 3*size,size, cudaMemcpyDeviceToHost, stream[3]);
                 //}
                 cudaStreamSynchronize(stream[0]); 
                 cudaStreamSynchronize(stream[1]);
