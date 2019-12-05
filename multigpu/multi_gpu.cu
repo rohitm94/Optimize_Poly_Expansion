@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 
         double dProc = std::max(double((3.0*(n/2)*(degree+1))/(gpuflopRate)),(double(sizeof(float)*((nbiter*(n/2))+degree+1))/(gpumemBW)));
  
-        double ideal_time = std::max(dProc,(HtD+DtH));
+        double ideal_time = std::max(dProc,2*(HtD+DtH));
         
         std::cout << double(n*sizeof(float))<< " " << degree << " " << ideal_time << " " << totaltime.count() << " " << (double(n))/(ideal_time) << " " << ((n)*nbiter)/totaltime.count() << std::endl;
         cudaSetDevice(0);
