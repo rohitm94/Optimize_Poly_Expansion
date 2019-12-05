@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
         cudaFree(d_array);
         cudaFree(d_poly);
 
-        double pciBW = 1.50e+10, gpumemBW = 2.88e+11 , gpuflopRate = 1.43e+12 , pciLat = 8.80594e-06;
+        double pciBW = 1.50e+10, gpumemBW = 2.88e+11 , gpuflopRate = 1.73e+12 , pciLat = 8.80594e-06;
 
         double HtD =  double(((nbiter*n)*(sizeof(float)))/pciBW);
         double DtH =  double(((nbiter*n)*(sizeof(float)))/pciBW);
